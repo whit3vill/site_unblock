@@ -3,8 +3,10 @@ import os, sys, thread, socket
 BACKLOG = 1050
 MAX_DATA_RECV = 8192
 
+host = ''
+
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind('', '8080')
+s.bind((host, 8080))
 s.listen(BACKLOG)
 
 while 1:
