@@ -1,24 +1,14 @@
 import os, sys, thread, socket
 
-BACKLOG = 1050
+BACKLOG = 10
 MAX_DATA_RECV = 8192
 
 host = ''
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((host, 8080))
-s.listen(BACKLOG)
-
-while 1:
-	conn, client_addr = s.accept()
-	thread.start_new_thread(proxy_thread, (conn, client_addr))
-
-s.close()
-
 def proxy_thread(conn, client_addr):
 	request = conn.recv(MAX_DATA_RECV)
 
-	first_line = requeest.split('\n')[0]
+	first_line = request.split('\n')[0]
 	line = first_line.split(' ')[1]
 	if (line.find('://')):
 		url = line.split('://')[1]
@@ -40,7 +30,7 @@ def proxy_thread(conn, client_addr):
 	while 1:
 		data = s.recv(MAX_DATA_RECV)
 
-		if (data.find('HTTP/')):
+		if (len(data)):
 			if (data.find('404 Not Found') < 0):
 				conn.send(data)
 		else:
@@ -48,3 +38,13 @@ def proxy_thread(conn, client_addr):
 
 	s.close()
 	conn.close()
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((host, 8080))
+s.listen(BACKLOG)
+
+while 1:
+	conn, client_addr = s.accept()
+	thread.start_new_thread(proxy_thread, (conn, client_addr))
+
+s.close()
